@@ -18,6 +18,8 @@ struct PlayerState {
 
 struct GameState {
     var status = "waiting"
+    var totalPlayers = 0
+    var activePlayers = 0
 }
 
 class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, PNObjectEventListener {
@@ -31,9 +33,12 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     var uuid = "default-uuid"
     var winnerUuid = ""
     
-    var testTableData: [String] = ["Test1", "Test2"]
     var playerStates = [String: PlayerState]()
     var gameState = GameState()
+    
+    // ------------------------
+    // --- Overrides ----------
+    // ------------------------
     
     // Stores reference on PubNub client to make sure what it won't be released.
     override func viewDidLoad() {
@@ -49,7 +54,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         super.viewWillAppear(animated)
         // Reinitiate pubnub and reset the UI
         initPubNub()
-        updateUI()
+//        updateUI()
     }
     
     // Unsubscribe from pubnub when view changes
@@ -76,6 +81,10 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             vc?.winLabelText = self.winnerUuid + " Won!"
         }
     }
+    
+    // ------------------------
+    // --- Actions ------------
+    // ------------------------
     
     // When the attack button is pressed, attempt to attack the targeted player
     // This only works if the user has selected a target
@@ -128,53 +137,19 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             })
     }
     
-    // calls PubNub's hereNowForChannel function to get all users that are
-    // currently present in the channel.
-    func getPlayersHereNow() {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.client?.hereNowForChannel("game", withVerbosity: .state,
-                                 completion: { (result, status) in
-
-            if status == nil {
-                // Parse out the uuids from the result
-                let uuidObjs: AnyObject = result!.data.uuids as AnyObject
-                let uuidObjDict = uuidObjs as! [[String:AnyObject]]
-                // for each uuid, create a new player in the playerStates object
-                for uuidObj in uuidObjDict {
-                    let uuid = uuidObj["uuid"] as! String
-                    self.playerStates[uuid] = PlayerState()
-                }
-                // reload the view
-                self.playersCollectionView.reloadData()
-            }
-            else {
-                print("ERROR: could not get hereNow")
-            }
-        })
-    }
-    
     // Handle new message from one of channels on which client has been subscribed.
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
-        
-        // Handle new message stored in message.data.message
-        if message.data.channel != message.data.subscription {
-            
-            // Message has been received on channel group stored in message.data.subscription.
-        }
-        else {
-            
-            // Message has been received on channel stored in message.data.channel.
-        }
         
         let parsedMessage: AnyObject = message.data.message as AnyObject;
         let action: String = parsedMessage["action"] as! String
         if action == "updateGameState" {
             // Get objects from message
             let gameState: AnyObject = parsedMessage["gameState"] as AnyObject
-            print(gameState)
             let playerStates: [String: AnyObject] = gameState["playerStates"] as! [String: AnyObject]
             // Update game status
             self.gameState.status = gameState["status"] as! String
+            self.gameState.totalPlayers = gameState["totalPlayers"] as! Int
+            self.gameState.activePlayers = gameState["activePlayers"] as! Int
             // Update player states
             for stateObj in playerStates {
                 // Get user's state
@@ -210,33 +185,6 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         updateUI()
     }
     
-    // Handle new presence events
-    func client(_ client: PubNub, didReceivePresenceEvent event: PNPresenceEventResult) {
-        
-        // Handle presence event event.data.presenceEvent (one of: join, leave, timeout, state-change).
-        if event.data.channel != event.data.subscription {
-            
-            // Presence event has been received on channel group stored in event.data.subscription.
-        }
-        else {
-            
-            // Presence event has been received on channel stored in event.data.channel.
-        }
-        
-        if event.data.presenceEvent != "state-change" {
-            
-            print("\(event.data.presence.uuid) \"\(event.data.presenceEvent)'ed\"\n" +
-                "at: \(event.data.presence.timetoken) on \(event.data.channel) " +
-                "(Occupancy: \(event.data.presence.occupancy))");
-        }
-        else {
-            
-            print("\(event.data.presence.uuid) changed state at: " +
-                "\(event.data.presence.timetoken) on \(event.data.channel) to:\n" +
-                "\(event.data.presence.state)");
-        }
-    }
-    
     // Helper function for sending messages
     func sendMessage(packet: String) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -250,13 +198,20 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     func updateUI() {
         updateActionButtonsVisibility()
         playersCollectionView.reloadData()
+        if gameState.status == "waiting" {
+            serverInfoText.text = "Waiting for all players to ready uo..."
+        } else if gameState.status == "inProgress" {
+            let playersLeft = gameState.totalPlayers - (gameState.totalPlayers - gameState.activePlayers)
+            serverInfoText.text = "\(playersLeft) Player(s) Left."
+        }
     }
     
     // Set the action button visibility according to the game state
     func updateActionButtonsVisibility() {
         if gameState.status == "waiting" {
+            readyButton.isEnabled = true
             attackButton.isHidden = true
-            if (playerStates[uuid]!.ready) {
+            if (playerStates[uuid] != nil && playerStates[uuid]!.ready ) {
                 readyButton.isEnabled = false
             }
         } else {

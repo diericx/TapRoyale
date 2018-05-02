@@ -53,7 +53,7 @@
 		1108D53B209943BC00063133 /* TapRoyaleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TapRoyaleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1108D53F209943BC00063133 /* TapRoyaleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapRoyaleUITests.swift; sourceTree = "<group>"; };
 		1108D541209943BC00063133 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1108D54D2099450800063133 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		1108D54D2099450800063133 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		1108D54F20994B9900063133 /* GameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameVC.swift; sourceTree = "<group>"; };
 		1108D55120996C2C00063133 /* PlayerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
 		115898A42099BE0100E0408B /* WinVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinVC.swift; sourceTree = "<group>"; };

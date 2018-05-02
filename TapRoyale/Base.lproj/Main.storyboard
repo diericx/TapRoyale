@@ -59,20 +59,20 @@
                                 <rect key="frame" x="0.0" y="472" width="375" height="195"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6U-w9-3fT">
-                                        <rect key="frame" x="44" y="28" width="44" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <state key="normal" title="Attack"/>
-                                        <connections>
-                                            <action selector="attackButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="yNb-LR-UKD"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="REk-Al-KeR">
                                         <rect key="frame" x="150" y="68" width="73" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <state key="normal" title="I'm Ready!"/>
                                         <connections>
                                             <action selector="readyButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="UfH-zY-y8Q"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6U-w9-3fT">
+                                        <rect key="frame" x="164" y="66" width="44" height="31"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <state key="normal" title="Attack"/>
+                                        <connections>
+                                            <action selector="attackButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="yNb-LR-UKD"/>
                                         </connections>
                                     </button>
                                 </subviews>
