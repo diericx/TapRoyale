@@ -54,7 +54,6 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         super.viewWillAppear(animated)
         // Reinitiate pubnub and reset the UI
         initPubNub()
-//        updateUI()
     }
     
     // Unsubscribe from pubnub when view changes
@@ -120,16 +119,14 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         config.presenceHeartbeatInterval = 10
         
         appDelegate.client = PubNub.clientWithConfiguration(config)
-        
         appDelegate.client?.addListener(self)
-        
         appDelegate.client?.subscribeToChannels([gameChannel], withPresence: true)
-        //
+        
+        // Once we have made a connection, send a join message
         appDelegate.client?.timeWithCompletion({ (result, status) in
                 if status == nil {
                     print("Connected!")
                     self.sendMessage(packet: "{\"action\": \"join\", \"uuid\": \"\(self.uuid)\"}")
-//                    self.getPlayersHereNow()
                 }
                 else {
                     status?.retry()
@@ -195,6 +192,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     // --- UI -----------------
     // ------------------------
     
+    // Updates the action buttons, player collection view and server message
     func updateUI() {
         updateActionButtonsVisibility()
         playersCollectionView.reloadData()
