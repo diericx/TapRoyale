@@ -17,6 +17,7 @@
 		1108D54E2099450800063133 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 1108D54D2099450800063133 /* Podfile */; };
 		1108D55020994B9900063133 /* GameVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1108D54F20994B9900063133 /* GameVC.swift */; };
 		1108D55220996C2C00063133 /* PlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1108D55120996C2C00063133 /* PlayerCell.swift */; };
+		115898A52099BE0100E0408B /* WinVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115898A42099BE0100E0408B /* WinVC.swift */; };
 		47278A67DE35722809A3FA9A /* Pods_TapRoyale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B94D1A1E7A9A6C07BD0531 /* Pods_TapRoyale.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		1108D54D2099450800063133 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		1108D54F20994B9900063133 /* GameVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameVC.swift; sourceTree = "<group>"; };
 		1108D55120996C2C00063133 /* PlayerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerCell.swift; sourceTree = "<group>"; };
+		115898A42099BE0100E0408B /* WinVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinVC.swift; sourceTree = "<group>"; };
 		19A7596442D975FC8B3E2FCE /* Pods_TapRoyaleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TapRoyaleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B94D1A1E7A9A6C07BD0531 /* Pods_TapRoyale.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TapRoyale.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D6C9005EE7C8619C0B5E502 /* Pods_TapRoyaleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TapRoyaleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +123,7 @@
 				1108D528209943BC00063133 /* LaunchScreen.storyboard */,
 				1108D52B209943BC00063133 /* Info.plist */,
 				1108D54F20994B9900063133 /* GameVC.swift */,
+				115898A42099BE0100E0408B /* WinVC.swift */,
 			);
 			path = TapRoyale;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				1108D522209943BA00063133 /* MenuVC.swift in Sources */,
 				1108D55020994B9900063133 /* GameVC.swift in Sources */,
 				1108D520209943BA00063133 /* AppDelegate.swift in Sources */,
+				115898A52099BE0100E0408B /* WinVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

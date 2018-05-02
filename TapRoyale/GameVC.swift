@@ -38,11 +38,6 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     // Stores reference on PubNub client to make sure what it won't be released.
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Initialize game state to empty dictionary
-        playerStates = [String: PlayerState]()
-        targetPlayerUUID = ""
-        // Do any additional setup after loading the view, typically from a nib.
-        initPubNub()
     }
     
     override func didReceiveMemoryWarning() {
@@ -50,14 +45,36 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Reinitiate pubnub and reset the UI
+        initPubNub()
+        updateUI()
+    }
+    
     // Unsubscribe from pubnub when view changes
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        // Reset
+        playerStates = [String: PlayerState]()
+        gameState = GameState()
+        targetPlayerUUID = ""
+        
         // Unsubscribe from the game channel so everyone knows we have left
         print("Bye pubnub!")
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.client?.unsubscribeFromChannels([gameChannel], withPresence: true)
         appDelegate.client?.removeListener(self)
+    }
+    
+    // Before segue, set the label describing who won
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.destination is WinVC
+        {
+            let vc = segue.destination as? WinVC
+            vc?.winLabelText = self.winnerUuid + " Won!"
+        }
     }
     
     // When the attack button is pressed, attempt to attack the targeted player

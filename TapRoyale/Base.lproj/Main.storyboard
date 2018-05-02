@@ -149,11 +149,47 @@
                         <outlet property="playersCollectionView" destination="4iy-eP-CuM" id="WoY-Me-MfC"/>
                         <outlet property="readyButton" destination="REk-Al-KeR" id="T5J-AE-6oY"/>
                         <outlet property="serverInfoText" destination="uXJ-hR-vYv" id="zva-aM-eJd"/>
+                        <segue destination="5oo-IZ-hlF" kind="show" identifier="segue_gameToWinScreen" id="9eB-hA-YHC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iIx-zU-xxx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1557.5999999999999" y="312.59370314842579"/>
+        </scene>
+        <!--WinVC-->
+        <scene sceneID="DrM-bP-Vc5">
+            <objects>
+                <viewController id="5oo-IZ-hlF" customClass="WinVC" customModule="TapRoyale" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OTp-tL-Vsr">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Win Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W34-hr-4lA">
+                                <rect key="frame" x="108" y="103" width="158" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="37"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="axH-vF-pCV">
+                                <rect key="frame" x="22" y="20" width="34" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Back"/>
+                                <connections>
+                                    <action selector="onDismissUpInside:" destination="5oo-IZ-hlF" eventType="touchUpInside" id="WDK-wy-bCI"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="f6d-5c-5Hi"/>
+                    </view>
+                    <connections>
+                        <outlet property="winLabel" destination="W34-hr-4lA" id="h2Z-xY-pOk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jq2-AR-whq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2520.8000000000002" y="344.97751124437787"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YNR-9E-H7k">
