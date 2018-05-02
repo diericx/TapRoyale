@@ -10,7 +10,6 @@ import UIKit
 import PubNub
 
 var gameChannel = "game"
-var testuuid = "test-uuid"
 
 struct PlayerState {
     var health: Int = 100
@@ -29,6 +28,8 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     @IBOutlet weak var playersCollectionView: UICollectionView!
     
     var targetPlayerUUID = ""
+    var uuid = "default-uuid"
+    var winnerUuid = ""
     
     var testTableData: [String] = ["Test1", "Test2"]
     var playerStates = [String: PlayerState]()
@@ -66,12 +67,12 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
             print("No target to attack!")
             return
         }
-        sendMessage(packet: "{\"action\": \"attack\", \"targetUuid\": \"\(targetPlayerUUID)\"}")
+        sendMessage(packet: "{\"action\": \"attack\", \"uuid\": \"\(uuid)\", \"targetUuid\": \"\(targetPlayerUUID)\"}")
     }
     
     // Send the ready message
     @IBAction func readyButtonOnUpInside(_ sender: Any) {
-        sendMessage(packet: "{\"action\": \"ready\", \"uuid\": \"\(testuuid)\"}")
+        sendMessage(packet: "{\"action\": \"ready\", \"uuid\": \"\(uuid)\"}")
     }
     
     // ------------------------
@@ -88,7 +89,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         
         let config = PNConfiguration( publishKey: "pub-c-36290493-5352-4632-90c5-9c94f5d0127c", subscribeKey: "sub-c-9c0c38c8-4dab-11e8-9796-063929a21258")
-        config.uuid = testuuid
+        config.uuid = uuid
         config.presenceHeartbeatValue = 30
         config.presenceHeartbeatInterval = 10
         
@@ -101,7 +102,8 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         appDelegate.client?.timeWithCompletion({ (result, status) in
                 if status == nil {
                     print("Connected!")
-                    self.getPlayersHereNow()
+                    self.sendMessage(packet: "{\"action\": \"join\", \"uuid\": \"\(self.uuid)\"}")
+//                    self.getPlayersHereNow()
                 }
                 else {
                     status?.retry()
@@ -152,6 +154,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         if action == "updateGameState" {
             // Get objects from message
             let gameState: AnyObject = parsedMessage["gameState"] as AnyObject
+            print(gameState)
             let playerStates: [String: AnyObject] = gameState["playerStates"] as! [String: AnyObject]
             // Update game status
             self.gameState.status = gameState["status"] as! String
@@ -170,11 +173,22 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
                 self.playerStates[stateObj.key]?.health = health
                 self.playerStates[stateObj.key]?.ready = ready
             }
+        } else if action == "updatePlayerState" {
+            let uuid = parsedMessage["uuid"] as! String
+            let playerState = parsedMessage["playerState"] as! [String: AnyObject]
+            self.playerStates[uuid]?.health = playerState["health"] as! Int
+            self.playerStates[uuid]?.ready = playerState["ready"] as! Bool
         } else if action == "startGame" {
             gameState.status = "inProgress"
         } else if action == "ready" {
             let uuid = parsedMessage["uuid"] as! String
             self.playerStates[uuid]?.ready = true
+        } else if action == "win" {
+            let uuid = parsedMessage["uuid"] as! String
+            self.winnerUuid = uuid
+            performSegue(withIdentifier: "segue_gameToWinScreen", sender: nil)
+        } else {
+            return
         }
         updateUI()
     }
@@ -225,7 +239,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     func updateActionButtonsVisibility() {
         if gameState.status == "waiting" {
             attackButton.isHidden = true
-            if (playerStates[testuuid]!.ready) {
+            if (playerStates[uuid]!.ready) {
                 readyButton.isEnabled = false
             }
         } else {
@@ -254,18 +268,12 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         // Set attributes of cell to match the player that it represents
         cell.nameLabel.text = key
-        cell.uuid = key
         cell.healthBar.progress = Float(state.health)/100
         if (state.ready && state.health > 0) {
             cell.image.alpha = 1
         } else {
             cell.image.alpha = 0.5
         }
-        print("player state: ")
-        print(state)
-        print("player uuid: ")
-        print(key)
-        print(cell.uuid)
         
         // Create a red background for when the cell is selected
         let view = UIView(frame: cell.bounds)
@@ -278,8 +286,9 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     // When a cell is selected, set the player it represents as the target
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
-        print("Setting target:", cell.uuid)
-        targetPlayerUUID = cell.uuid
+        
+        let key = Array(playerStates.keys)[indexPath.row]
+        targetPlayerUUID = key
     }
     
     

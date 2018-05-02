@@ -39,6 +39,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Tap Royale" id="LRg-eC-G79"/>
                     <connections>
+                        <outlet property="usernameInput" destination="f7w-Ae-xof" id="SQM-NK-Lhy"/>
                         <segue destination="bSp-EM-hZT" kind="show" identifier="segue_menuToGame" id="bow-rl-CdM"/>
                     </connections>
                 </viewController>
@@ -127,7 +128,7 @@
                             </collectionView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wra-dV-2ov" userLabel="InfoView">
                                 <rect key="frame" x="0.0" y="64" width="375" height="48"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Waiting for players to ready up..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uXJ-hR-vYv">
                                         <rect key="frame" x="0.0" y="14" width="375" height="21"/>
