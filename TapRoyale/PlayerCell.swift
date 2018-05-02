@@ -9,6 +9,10 @@
 import UIKit
 
 class PlayerCell: UICollectionViewCell {
+    // outlets to the UI elements
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var healthBar: UIProgressView!
+    
+    // attribute to hold the uuid for the player this cell represents
     var uuid: String = ""
 }

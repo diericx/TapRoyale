@@ -13,22 +13,24 @@ var gameChannel = "game"
 var testuuid = "test-uuid"
 
 struct PlayerState {
-    var health = 100
+    var health: Int = 100
 }
 
 class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, PNObjectEventListener {
     
     @IBOutlet weak var playersCollectionView: UICollectionView!
     
+    var targetPlayerUUID = ""
+    
     var testTableData: [String] = ["Test1", "Test2"]
     var playerStates = [String: PlayerState]()
-    var targetPlayerUUID = ""
     
     // Stores reference on PubNub client to make sure what it won't be released.
     override func viewDidLoad() {
         super.viewDidLoad()
         // Initialize game state to empty dictionary
         playerStates = [String: PlayerState]()
+        targetPlayerUUID = ""
         // Do any additional setup after loading the view, typically from a nib.
         initPubNub()
     }
@@ -51,10 +53,6 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         sendMessage(packet: "{\"action\": \"ready\", \"uuid\": \"\(testuuid)\"}")
     }
     
-    @IBAction func onPlayerCellUpInside(_ sender: Any) {
-        let cell = sender as! PlayerCell
-        targetPlayerUUID = cell.uuid
-    }
     // --------------
     // --- PubNub Functions ---
     // --------------
@@ -139,6 +137,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
                 let state = stateObj.value as! [String: AnyObject]
                 let health = state["health"] as! Int
                 self.playerStates[stateObj.key]?.health = health
+                playersCollectionView.reloadData()
                 print(health)
 //                let state = playerStates[uuid] as AnyObject
 //                let health = state["health"] as! Int
@@ -197,14 +196,37 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
         
+        print("PLAYER STATES", playerStates)
+        
+        // Get information from the player states
         let key = Array(playerStates.keys)[indexPath.row]
+        let playerHealth = Float(playerStates[key]!.health)
+        // Set attributes of cell to match the player that it represents
         cell.nameLabel.text = key
         cell.uuid = key
+        cell.healthBar.progress = playerHealth/100
         print("changing label to this: ")
         print(key)
         
+        // Create a red background for when the cell is selected
+        let view = UIView(frame: cell.bounds)
+        view.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.2)
+        cell.selectedBackgroundView = view
+        
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
+        targetPlayerUUID = cell.uuid
+//        cell.backgroundColor = cell.selectedColor
+//        cell.contentView.backgroundColor = cell.selectedColor
+//        collectionView.reloadItems(at: [indexPath])
+    }
+//        let url = thumbnailFileURLS[indexPath.item]
+//        if UIApplication.sharedApplication().canOpenURL(url) {
+//            UIApplication.sharedApplication().openURL(url)
+//        }
     
     
 }

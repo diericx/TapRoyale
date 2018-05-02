@@ -20,14 +20,14 @@
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f7w-Ae-xof">
                                 <rect key="frame" x="70" y="296" width="234" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xgr-ji-aAE">
                                 <rect key="frame" x="150" y="341" width="73" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Join Game"/>
                                 <connections>
                                     <action selector="onJoinGameButtonUpInside:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g7R-YV-vPK"/>
@@ -60,7 +60,7 @@
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6U-w9-3fT">
                                         <rect key="frame" x="165" y="96" width="44" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <state key="normal" title="Attack"/>
                                         <connections>
                                             <action selector="attackButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="yNb-LR-UKD"/>
@@ -71,7 +71,7 @@
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="4iy-eP-CuM">
                                 <rect key="frame" x="0.0" y="64" width="375" height="372"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="GUH-sz-sAJ">
                                     <size key="itemSize" width="77" height="77"/>
@@ -87,25 +87,26 @@
                                             <rect key="frame" x="0.0" y="0.0" width="77" height="77"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HSF-zv-zSF">
-                                                    <rect key="frame" x="0.0" y="52" width="77" height="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HSF-zv-zSF">
+                                                    <rect key="frame" x="0.0" y="57" width="77" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ifw-KH-D6a">
-                                                    <rect key="frame" x="0.0" y="0.0" width="77" height="77"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="knight" translatesAutoresizingMaskIntoConstraints="NO" id="QzC-CE-iX3">
+                                                    <rect key="frame" x="12" y="5" width="52" height="52"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Select"/>
-                                                    <connections>
-                                                        <action selector="onPlayerCellUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="9Jb-Yc-uG5"/>
-                                                    </connections>
-                                                </button>
+                                                </imageView>
+                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dRf-dc-oWH">
+                                                    <rect key="frame" x="0.0" y="75" width="77" height="2"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="progressTintColor" red="0.96799651015228427" green="0.0" blue="0.027179475673864514" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                </progressView>
                                             </subviews>
                                         </view>
-                                        <color key="backgroundColor" red="0.64386647624590654" green="0.96799651015228427" blue="0.4094043475318811" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <connections>
+                                            <outlet property="healthBar" destination="dRf-dc-oWH" id="xyG-7m-d53"/>
                                             <outlet property="nameLabel" destination="HSF-zv-zSF" id="Jk8-kv-l8u"/>
                                         </connections>
                                     </collectionViewCell>
@@ -146,4 +147,7 @@
             <point key="canvasLocation" x="-207.19999999999999" y="313.49325337331339"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="knight" width="24" height="24"/>
+    </resources>
 </document>
