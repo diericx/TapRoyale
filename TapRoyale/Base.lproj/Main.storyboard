@@ -55,23 +55,31 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="piX-9r-gu0" userLabel="ActionView">
-                                <rect key="frame" x="0.0" y="444" width="375" height="223"/>
+                                <rect key="frame" x="0.0" y="472" width="375" height="195"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6U-w9-3fT">
-                                        <rect key="frame" x="165" y="96" width="44" height="30"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y6U-w9-3fT">
+                                        <rect key="frame" x="44" y="28" width="44" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <state key="normal" title="Attack"/>
                                         <connections>
                                             <action selector="attackButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="yNb-LR-UKD"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="REk-Al-KeR">
+                                        <rect key="frame" x="150" y="68" width="73" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <state key="normal" title="I'm Ready!"/>
+                                        <connections>
+                                            <action selector="readyButtonOnUpInside:" destination="bSp-EM-hZT" eventType="touchUpInside" id="UfH-zY-y8Q"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.96334268077655216" green="0.95868885140082005" blue="0.96799651015228427" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="4iy-eP-CuM">
-                                <rect key="frame" x="0.0" y="64" width="375" height="372"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <rect key="frame" x="0.0" y="120" width="375" height="344"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="GUH-sz-sAJ">
                                     <size key="itemSize" width="77" height="77"/>
@@ -107,6 +115,7 @@
                                         </view>
                                         <connections>
                                             <outlet property="healthBar" destination="dRf-dc-oWH" id="xyG-7m-d53"/>
+                                            <outlet property="image" destination="QzC-CE-iX3" id="2i0-di-cok"/>
                                             <outlet property="nameLabel" destination="HSF-zv-zSF" id="Jk8-kv-l8u"/>
                                         </connections>
                                     </collectionViewCell>
@@ -116,12 +125,29 @@
                                     <outlet property="delegate" destination="bSp-EM-hZT" id="UKy-3T-nau"/>
                                 </connections>
                             </collectionView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wra-dV-2ov" userLabel="InfoView">
+                                <rect key="frame" x="0.0" y="64" width="375" height="48"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Waiting for players to ready up..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uXJ-hR-vYv">
+                                        <rect key="frame" x="0.0" y="14" width="375" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.94132693527918776" green="0.94132693527918776" blue="0.94132693527918776" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="XzT-F9-iXA"/>
                     </view>
                     <connections>
+                        <outlet property="attackButton" destination="y6U-w9-3fT" id="AcZ-5k-NqS"/>
                         <outlet property="playersCollectionView" destination="4iy-eP-CuM" id="WoY-Me-MfC"/>
+                        <outlet property="readyButton" destination="REk-Al-KeR" id="T5J-AE-6oY"/>
+                        <outlet property="serverInfoText" destination="uXJ-hR-vYv" id="zva-aM-eJd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iIx-zU-xxx" userLabel="First Responder" sceneMemberID="firstResponder"/>

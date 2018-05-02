@@ -14,16 +14,25 @@ var testuuid = "test-uuid"
 
 struct PlayerState {
     var health: Int = 100
+    var ready: Bool = false
+}
+
+struct GameState {
+    var status = "waiting"
 }
 
 class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, PNObjectEventListener {
     
+    @IBOutlet weak var serverInfoText: UILabel!
+    @IBOutlet weak var attackButton: UIButton!
+    @IBOutlet weak var readyButton: UIButton!
     @IBOutlet weak var playersCollectionView: UICollectionView!
     
     var targetPlayerUUID = ""
     
     var testTableData: [String] = ["Test1", "Test2"]
     var playerStates = [String: PlayerState]()
+    var gameState = GameState()
     
     // Stores reference on PubNub client to make sure what it won't be released.
     override func viewDidLoad() {
@@ -40,6 +49,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         // Dispose of any resources that can be recreated.
     }
     
+    // Unsubscribe from pubnub when view changes
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // Unsubscribe from the game channel so everyone knows we have left
@@ -49,13 +59,24 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         appDelegate.client?.removeListener(self)
     }
     
+    // When the attack button is pressed, attempt to attack the targeted player
+    // This only works if the user has selected a target
     @IBAction func attackButtonOnUpInside(_ sender: Any) {
+        if (targetPlayerUUID == "") {
+            print("No target to attack!")
+            return
+        }
+        sendMessage(packet: "{\"action\": \"attack\", \"targetUuid\": \"\(targetPlayerUUID)\"}")
+    }
+    
+    // Send the ready message
+    @IBAction func readyButtonOnUpInside(_ sender: Any) {
         sendMessage(packet: "{\"action\": \"ready\", \"uuid\": \"\(testuuid)\"}")
     }
     
-    // --------------
-    // --- PubNub Functions ---
-    // --------------
+    // ------------------------
+    // --- PubNub -------------
+    // ------------------------
     
     // Initialize pubnub client
     func initPubNub() {
@@ -128,29 +149,34 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         let parsedMessage: AnyObject = message.data.message as AnyObject;
         let action: String = parsedMessage["action"] as! String
-        print(action)
-        if (action == "updateGameState") {
+        if action == "updateGameState" {
+            // Get objects from message
             let gameState: AnyObject = parsedMessage["gameState"] as AnyObject
             let playerStates: [String: AnyObject] = gameState["playerStates"] as! [String: AnyObject]
+            // Update game status
+            self.gameState.status = gameState["status"] as! String
+            // Update player states
             for stateObj in playerStates {
+                // Get user's state
                 let uuid = stateObj.key
                 let state = stateObj.value as! [String: AnyObject]
+                // get user's info
                 let health = state["health"] as! Int
+                let ready = state["ready"] as! Bool
+                // Update the player states
+                if (self.playerStates[stateObj.key] == nil) {
+                    self.playerStates[stateObj.key] = PlayerState()
+                }
                 self.playerStates[stateObj.key]?.health = health
-                playersCollectionView.reloadData()
-                print(health)
-//                let state = playerStates[uuid] as AnyObject
-//                let health = state["health"] as! Int
-//                if self.playerStates[uuid] == nil {
-//                    self.playerStates[uuid] = PlayerState()
-//                }
-//                self.playerStates[uuid].health = health
+                self.playerStates[stateObj.key]?.ready = ready
             }
-            print(playerStates)
+        } else if action == "startGame" {
+            gameState.status = "inProgress"
+        } else if action == "ready" {
+            let uuid = parsedMessage["uuid"] as! String
+            self.playerStates[uuid]?.ready = true
         }
-//        if (action == "")
-//        print(text)
-        
+        updateUI()
     }
     
     // Handle new presence events
@@ -180,33 +206,66 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         }
     }
     
+    // Helper function for sending messages
     func sendMessage(packet: String) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.client?.publish(packet, toChannel: gameChannel, compressed: false)
     }
     
+    // ------------------------
+    // --- UI -----------------
+    // ------------------------
     
-    // --------------
-    // --- Table View Functions ---
-    // --------------
+    func updateUI() {
+        updateActionButtonsVisibility()
+        playersCollectionView.reloadData()
+    }
+    
+    // Set the action button visibility according to the game state
+    func updateActionButtonsVisibility() {
+        if gameState.status == "waiting" {
+            attackButton.isHidden = true
+            if (playerStates[testuuid]!.ready) {
+                readyButton.isEnabled = false
+            }
+        } else {
+            attackButton.isHidden = false
+            readyButton.isHidden = true
+        }
+    }
+    
+    // ------------------------
+    // --- Table View ---------
+    // ------------------------
+    
+    // Set the table view's cell count to the amount of player states
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return playerStates.count
     }
     
+    // Populate each cell with data for a player
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // Get the cell
         let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
-        
-        print("PLAYER STATES", playerStates)
         
         // Get information from the player states
         let key = Array(playerStates.keys)[indexPath.row]
-        let playerHealth = Float(playerStates[key]!.health)
+        let state = playerStates[key]!
+        
         // Set attributes of cell to match the player that it represents
         cell.nameLabel.text = key
         cell.uuid = key
-        cell.healthBar.progress = playerHealth/100
-        print("changing label to this: ")
+        cell.healthBar.progress = Float(state.health)/100
+        if (state.ready && state.health > 0) {
+            cell.image.alpha = 1
+        } else {
+            cell.image.alpha = 0.5
+        }
+        print("player state: ")
+        print(state)
+        print("player uuid: ")
         print(key)
+        print(cell.uuid)
         
         // Create a red background for when the cell is selected
         let view = UIView(frame: cell.bounds)
@@ -216,17 +275,12 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         return cell
     }
     
+    // When a cell is selected, set the player it represents as the target
     func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
+        print("Setting target:", cell.uuid)
         targetPlayerUUID = cell.uuid
-//        cell.backgroundColor = cell.selectedColor
-//        cell.contentView.backgroundColor = cell.selectedColor
-//        collectionView.reloadItems(at: [indexPath])
     }
-//        let url = thumbnailFileURLS[indexPath.item]
-//        if UIApplication.sharedApplication().canOpenURL(url) {
-//            UIApplication.sharedApplication().openURL(url)
-//        }
     
     
 }
