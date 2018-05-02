@@ -18,8 +18,11 @@ struct PlayerState {
 
 class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, PNObjectEventListener {
     
+    @IBOutlet weak var playersCollectionView: UICollectionView!
+    
     var testTableData: [String] = ["Test1", "Test2"]
     var playerStates = [String: PlayerState]()
+    var targetPlayerUUID = ""
     
     // Stores reference on PubNub client to make sure what it won't be released.
     override func viewDidLoad() {
@@ -48,6 +51,10 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         sendMessage(packet: "{\"action\": \"ready\", \"uuid\": \"\(testuuid)\"}")
     }
     
+    @IBAction func onPlayerCellUpInside(_ sender: Any) {
+        let cell = sender as! PlayerCell
+        targetPlayerUUID = cell.uuid
+    }
     // --------------
     // --- PubNub Functions ---
     // --------------
@@ -72,42 +79,38 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         
         appDelegate.client?.subscribeToChannels([gameChannel], withPresence: true)
         //
-        getPlayersHereNow()
+        appDelegate.client?.timeWithCompletion({ (result, status) in
+                if status == nil {
+                    print("Connected!")
+                    self.getPlayersHereNow()
+                }
+                else {
+                    status?.retry()
+                }
+            })
     }
     
+    // calls PubNub's hereNowForChannel function to get all users that are
+    // currently present in the channel.
     func getPlayersHereNow() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.client?.hereNowForChannel("game", withVerbosity: .state,
                                  completion: { (result, status) in
 
             if status == nil {
-                let uuids: AnyObject = result!.data.uuids as AnyObject;
-                print(uuids)
-                print(uuids.count)
-                for uuid in uuids {
-                    let uuidObj: AnyObject = uuid as AnyObject
-                    let uuidString = uuid["uuid"] as String
-                    playerStates[uuid] = PlayerState()
+                // Parse out the uuids from the result
+                let uuidObjs: AnyObject = result!.data.uuids as AnyObject
+                let uuidObjDict = uuidObjs as! [[String:AnyObject]]
+                // for each uuid, create a new player in the playerStates object
+                for uuidObj in uuidObjDict {
+                    let uuid = uuidObj["uuid"] as! String
+                    self.playerStates[uuid] = PlayerState()
                 }
-//                for uuid in result!.data.uuids {
-//                    print(uuid)
-//                }
-                /**
-                 Handle downloaded presence information using:
-                 result.data.uuids - list of uuids.
-                 result.data.occupancy - total number of active subscribers.
-                 */
+                // reload the view
+                self.playersCollectionView.reloadData()
             }
             else {
-
-                /**
-                 Handle presence audit error. Check 'category' property to find
-                 out possible reason because of which request did fail.
-                 Review 'errorData' property (which has PNErrorData data type) of status
-                 object to get additional information about issue.
-
-                 Request can be resent using: status.retry()
-                 */
+                print("ERROR: could not get hereNow")
             }
         })
     }
@@ -129,7 +132,21 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         let action: String = parsedMessage["action"] as! String
         print(action)
         if (action == "updateGameState") {
-            let playerStates: AnyObject = parsedMessage["playerStates"] as AnyObject
+            let gameState: AnyObject = parsedMessage["gameState"] as AnyObject
+            let playerStates: [String: AnyObject] = gameState["playerStates"] as! [String: AnyObject]
+            for stateObj in playerStates {
+                let uuid = stateObj.key
+                let state = stateObj.value as! [String: AnyObject]
+                let health = state["health"] as! Int
+                self.playerStates[stateObj.key]?.health = health
+                print(health)
+//                let state = playerStates[uuid] as AnyObject
+//                let health = state["health"] as! Int
+//                if self.playerStates[uuid] == nil {
+//                    self.playerStates[uuid] = PlayerState()
+//                }
+//                self.playerStates[uuid].health = health
+            }
             print(playerStates)
         }
 //        if (action == "")
@@ -174,13 +191,17 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
     // --- Table View Functions ---
     // --------------
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return testTableData.count
+        return playerStates.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: PlayerCell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PlayerCell
         
-        cell.nameLabel.text = testTableData[indexPath.row]
+        let key = Array(playerStates.keys)[indexPath.row]
+        cell.nameLabel.text = key
+        cell.uuid = key
+        print("changing label to this: ")
+        print(key)
         
         return cell
     }
