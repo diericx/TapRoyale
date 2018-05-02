@@ -114,7 +114,7 @@ class GameVC: UIViewController, UICollectionViewDataSource, UICollectionViewDele
         appDelegate.client?.unsubscribeFromChannels([gameChannel], withPresence: true) // If pubnub exists, unsubscribe
         
         
-        let config = PNConfiguration( publishKey: "pub-c-36290493-5352-4632-90c5-9c94f5d0127c", subscribeKey: "sub-c-9c0c38c8-4dab-11e8-9796-063929a21258")
+        let config = PNConfiguration( publishKey: "pub-key", subscribeKey: "sub-key")
         config.uuid = uuid
         config.presenceHeartbeatValue = 30
         config.presenceHeartbeatInterval = 10
